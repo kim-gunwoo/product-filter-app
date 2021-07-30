@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Main from 'pages/Main';
+import Product from 'pages/Product';
+import RecentList from 'pages/RecentList';
+import { fetchApiData } from 'utils/api/config';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component {
+  state = {
+    items: [],
+  };
+
+  componentDidMount() {
+    // const getData = async () => {
+    //   const items = await fetchApiData();
+    //   this.setState({ items });
+    // };
+    fetchApiData().then(items => this.setState({ items }));
+  }
+
+  render() {
+    const { items } = this.state;
+
+    return (
+      <BrowserRouter>
+        <Switch>
+          <Route
+            exact
+            path="/"
+            component={props => <Main {...props} items={items} />}
+          />
+          <Route
+            exact
+            path="/product"
+            component={props => <Product {...props} items={items} />}
+          />
+          <Route exact path="/recentList" component={RecentList} />
+        </Switch>
+      </BrowserRouter>
+    );
+  }
 }
-
-export default App;
