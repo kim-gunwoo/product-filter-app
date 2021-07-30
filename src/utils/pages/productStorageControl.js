@@ -1,5 +1,6 @@
 export const NO_INTERRESTED = 'no_Interested';
 export const WATCH = 'watch';
+export const RESET_DATE = new Date();
 
 export const setLocalStorageRecentItems = (watch, item) => {
   const initStorage = JSON.parse(localStorage[watch] || '[]');
@@ -12,20 +13,27 @@ export const setLocalStorageRecentItems = (watch, item) => {
     date,
   };
 
-  const items = storage
-    .map(el => (el.id === item.id ? data : el))
-    .filter(el => el.date.slice(0, 8) === date.slice(0, 8));
+  const items = storage.map(el => (el.id === item.id ? data : el));
+  // .filter(el => el.date.slice(0, 8) === date.slice(0, 8));
 
-  if (!findItem) {
-    items.push(data);
-  }
+  if (!findItem) items.push(data);
 
   localStorage[watch] = JSON.stringify(items);
 };
 
 export const getLocalStorageReCentItems = watch => {
+  resetLocalStorageProducts(watch, getFormatDate(RESET_DATE, 'YYYYMMDDHHMISS'));
   const initStorage = JSON.parse(localStorage[watch] || '[]');
   return Array.isArray(initStorage) ? initStorage : [];
+};
+
+export const resetLocalStorageProducts = (watch, date) => {
+  const initStorage = JSON.parse(localStorage[watch] || '[]');
+  const storage = Array.isArray(initStorage) ? initStorage : [];
+  const products = storage.filter(
+    el => el.date.slice(0, 8) === date.slice(0, 8)
+  );
+  localStorage[watch] = JSON.stringify(products);
 };
 
 export const getFormatDate = (date, format) => {
